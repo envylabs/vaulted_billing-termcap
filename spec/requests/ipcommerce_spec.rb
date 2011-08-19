@@ -57,6 +57,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
            it { should be_a VaultedBilling::Transaction }
            it { should_not be_success }
            its(:message) { should =~ /^The value -10\.00 is too small.  The minimum value is 0\./i }
+           its(:raw_response) { should_not be_nil }
         end
       end
     end
@@ -97,7 +98,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
         end
       end
     end
-    
+
     context 'ignores difference data that is not associated with a transaction' do
       use_vcr_cassette 'ipcommerce/capture_selective/ignore_invalid_difference_data'
       subject { gateway.capture_selective([authorization.id], [{ :id => "fail", :amount => 10.00 }], options) }

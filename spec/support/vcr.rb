@@ -6,10 +6,6 @@ VCR.config do |config|
   config.stub_with :webmock
   config.ignore_localhost = true
   config.default_cassette_options = { :record => :none }
-  config.filter_sensitive_data('%{NMI_CUSTOMER_VAULT_USERNAME}') { VaultedBilling.config.nmi_customer_vault.username }
-  config.filter_sensitive_data('%{NMI_CUSTOMER_VAULT_PASSWORD}') { VaultedBilling.config.nmi_customer_vault.password }
-  config.filter_sensitive_data('%{AUTHORIZE_NET_CIM_USERNAME}') { VaultedBilling.config.authorize_net_cim.username }
-  config.filter_sensitive_data('%{AUTHORIZE_NET_CIM_PASSWORD}') { VaultedBilling.config.authorize_net_cim.username }
   config.filter_sensitive_data('%{IPCOMMERCE_USERNAME}') { VaultedBilling.config.ipcommerce.username }
   config.filter_sensitive_data('%{IPCOMMERCE_ESCAPED_USERNAME}') { CGI.escape(VaultedBilling.config.ipcommerce.username) }
 end

@@ -1,7 +1,3 @@
-# module VaultedBilling
-#   module Gateways
-#     module Ipcommerce
-
 VaultedBilling::Gateways::Ipcommerce.class_eval do
   
   ##
@@ -9,7 +5,7 @@ VaultedBilling::Gateways::Ipcommerce.class_eval do
   # Optionally specify difference amounts for each transaction.
   # ex.
   #   differences = [
-  #     { :id => 2, :amount => 12.00, :addendum => "Some message here." }
+  #     { :id => 2, :amount => 12.00 }
   #   ]
   def capture_selective(transaction_ids, differences = [], options = {})
     data = {
