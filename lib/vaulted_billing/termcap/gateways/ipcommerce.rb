@@ -1,3 +1,5 @@
+require 'vaulted_billing/gateways/ipcommerce'
+
 VaultedBilling::Gateways::Ipcommerce.class_eval do
   
   ##
