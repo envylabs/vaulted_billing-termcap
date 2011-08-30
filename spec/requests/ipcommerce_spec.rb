@@ -123,4 +123,57 @@ describe VaultedBilling::Gateways::Ipcommerce do
       end
     end
   end
+
+
+
+  context '#capture_all' do
+     let(:amount) { 10.00 }
+     let(:customer) { Factory.build(:customer) }
+     let(:credit_card) { Factory.build(:ipcommerce_credit_card) }
+     let(:authorization) { gateway.authorize(customer, credit_card, amount, options) }
+
+     shared_examples_for 'a successful capture_all' do |count|
+       it_should_behave_like 'a transaction request'
+       it { should be_success }
+       its(:id) { should_not be_nil }
+       its(:authcode) { should be_nil }
+       its(:message) { should =~ %r{Batch file successfully uploaded.} }
+       its(:code) { should == 1 }
+       it "finds the correct number of transactions to capture" do
+          MultiJson.decode(subject.raw_response).first["TransactionSummaryData"]["NetTotals"]["Count"].should == count
+       end
+     end
+
+     context 'with a single authorization' do
+       subject { gateway.capture_all(options) }
+
+       context 'when successful' do
+         use_vcr_cassette 'ipcommerce/capture_all/success'
+         let!(:authorize) { authorization }
+         it_should_behave_like 'a successful capture_all', 1
+       end
+     end
+   end
+   
+   
+   context '#return_unlinked' do
+     let(:amount) { 10.00 }
+     let(:customer) { Factory.build(:customer) }
+     let(:credit_card) { Factory.build(:ipcommerce_credit_card) }
+     
+     context 'with a credit card' do
+       subject { gateway.return_unlinked(customer, credit_card, amount, options) }
+
+       context 'when successful' do
+         use_vcr_cassette 'ipcommerce/return_unlinked/success'
+          
+          it_should_behave_like 'a transaction request'
+          it { should be_success }
+          its(:id) { should_not be_nil }
+          its(:authcode) { should == "" }
+          its(:message) { should == "Transaction Approved" }
+          its(:code) { should == 1 }
+        end
+     end
+   end
 end
