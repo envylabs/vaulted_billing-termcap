@@ -5,4 +5,4 @@ Added _return unlinked_ call to IP Commerce gateway.
 
 ### 0.0.1 / 2011
 
-Added _capture selective_ call to IP Commerce gateway._
+Added _capture selective_ call to IP Commerce gateway.
