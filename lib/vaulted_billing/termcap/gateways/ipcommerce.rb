@@ -69,7 +69,7 @@ VaultedBilling::Gateways::Ipcommerce.class_eval do
                  :success => (transaction.code == 1))
   end
 
-  def query_transaction_details(transaction_ids, options={})
+  def query_transaction_details(options={})
     data = {
       :"__type" => "QueryTransactionsDetail:http://schemas.ipcommerce.com/CWS/v2.0/DataServices/TMS/Rest",
 			:PagingParameters => paging_parameters(options[:page], options[:per_page]),
@@ -78,7 +78,7 @@ VaultedBilling::Gateways::Ipcommerce.class_eval do
 				:"__type" => "QueryTransactionsParameters:http://schemas.ipcommerce.com/CWS/v2.0/DataServices/TMS",
 				:IsAcknowledged => options[:is_acknowledged] || 0,
 				:QueryType => options[:query_type] || 0,
-				:TransactionIds => transaction_ids
+				:TransactionIds => options[:transaction_ids] || nil
 			}.merge(date_range("TransactionDateRange", options[:start_date], options[:end_date])),
 			:TransactionDetailFormat => 2
     }
@@ -101,7 +101,8 @@ VaultedBilling::Gateways::Ipcommerce.class_eval do
 			:QueryTransactionsParameters => {
 				:"__type" => "QueryTransactionsParameters:http://schemas.ipcommerce.com/CWS/v2.0/DataServices/TMS",
 				:IsAcknowledged => options[:is_acknowledged] || 0,
-				:QueryType => options[:query_type] || 0
+				:QueryType => options[:query_type] || 0,
+				:TransactionIds => options[:transaction_ids] || nil
 			}.merge(date_range("TransactionDateRange", options[:start_date], options[:end_date]))
     }
   
@@ -129,7 +130,7 @@ VaultedBilling::Gateways::Ipcommerce.class_eval do
                  response,
                  :success => response.success?)
   end
-  
+
   def query_transactions_summary(options={})
     data = {
       :"__type" => "QueryTransactionsSummary:http://schemas.ipcommerce.com/CWS/v2.0/DataServices/TMS/Rest",
@@ -137,7 +138,8 @@ VaultedBilling::Gateways::Ipcommerce.class_eval do
 			:QueryTransactionsParameters => {
 				:"__type" => "QueryTransactionsParameters:http://schemas.ipcommerce.com/CWS/v2.0/DataServices/TMS",
 				:IsAcknowledged => options[:is_acknowledged] || 0,
-				:QueryType => options[:query_type] || 0
+				:QueryType => options[:query_type] || 0,
+				:TransactionIds => options[:transaction_ids] || nil
 			}.merge(date_range("TransactionDateRange", options[:start_date], options[:end_date]))
     }
 

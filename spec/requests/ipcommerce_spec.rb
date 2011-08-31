@@ -178,7 +178,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     let(:authorization2) { gateway.authorize(customer, credit_card, 30.00, options) }
     let(:capture) { gateway.capture_all(options) }
     
-    subject { gateway.query_transaction_details([authorization.id, authorization2.id]) }
+    subject { gateway.query_transaction_details({ :transaction_ids => [authorization.id, authorization2.id] }) }
     
     context 'with a pending capture' do
       use_vcr_cassette 'ipcommerce/query_transaction_details/success'
@@ -188,7 +188,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
       its(:length) { should == 2 }
       
       context 'first result' do
-        subject { gateway.query_transaction_details([authorization.id, authorization2.id]).first }
+        subject { gateway.query_transaction_details({ :transaction_ids => [authorization.id, authorization2.id] }).first }
         
         it { should be_kind_of(VaultedBilling::Transaction) }
         it { should be_kind_of(VaultedBilling::Transactions::Ipcommerce) }
@@ -201,7 +201,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
       end
     end
   end
-  
+
   context '#query_transactions_families' do
     let(:customer) { Factory.build(:customer) }
     let(:credit_card) { Factory.build(:ipcommerce_credit_card) }
@@ -217,7 +217,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
       its(:length) { should == 50 }
     end
   end
-  
+
   context '#query_batch' do
     let(:customer) { Factory.build(:customer) }
     let(:credit_card) { Factory.build(:ipcommerce_credit_card) }
