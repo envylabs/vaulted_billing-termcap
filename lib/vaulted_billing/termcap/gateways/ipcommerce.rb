@@ -40,6 +40,7 @@ VaultedBilling::Gateways::Ipcommerce.class_eval do
   end
   
   def return_unlinked(customer, credit_card, amount, options = {})
+    credit_card = credit_card.to_vaulted_billing
     data = {
       :"__type" => "ReturnTransaction:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Rest",
       :ApplicationProfileId => @application_id,
@@ -50,18 +51,18 @@ VaultedBilling::Gateways::Ipcommerce.class_eval do
           :Amount => "%.2f" % amount,
           :CurrencyCode => 4,
           :TransactionDateTime => Time.now.xmlschema,
-          :CustomerPresent => 0,
+          :CustomerPresent => options[:customer_present] || 0, # Not Set
           :EmployeeId => options[:employee_id],
-          :EntryMode => 1,
-          :GoodsType => 0,
-          :IndustryType => 2,
+          :EntryMode => options[:entry_mode] || 1, # Keyed
+          :GoodsType => options[:goods_type] || 0, # Not Set
+          :IndustryType => options[:industry_type] || 2, # Ecommerce
           :OrderNumber => options[:order_id] || generate_order_number,
-          :SignatureCaptured => false
+          :SignatureCaptured => options[:signature_captured] || false
         },
         :TenderData => card_data(credit_card)
       }
     }
-     
+
     response = http("Txn", options[:workflow_id] || @service_id).post(data)
     transaction = new_transaction_from_response(response)
     respond_with(transaction,

@@ -1,3 +1,7 @@
+### 0.0.5 / 9.12.2011
+
+Various bugfixes.
+
 ### 0.0.2 / 2011
 
 Added _capture all_ call to IP Commerce gateway.

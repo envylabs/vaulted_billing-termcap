@@ -2,16 +2,16 @@ module VaultedBilling
   module Transactions
     class Ipcommerce < VaultedBilling::Transaction
       CaptureStates = %w(
-        !! NotSet CannotCapture ReadyForCapture CapturePending Captured
-        CaptureDeclined InProcess CapturedUndoPermitted CapturePendingUndoPermitted CaptureError
-        CaptureUnknown BatchSent BatchSentUndoPermitted
+        !! NotSet CannotCapture ReadyForCapture CapturePending 
+        Captured CaptureDeclined InProcess CapturedUndoPermitted CapturePendingUndoPermitted 
+        CaptureError CaptureUnknown BatchSent BatchSentUndoPermitted
       ).freeze
 
       TransactionStates = %w(
-        !! NotSet Declined Verified Authorized Adjusted
-        Captured CaptureDeclined PartiallyCaptured Undone ReturnRequested
-        PartialReturnRequested ReturnUndone Returned PartiallyReturned InProcess
-        ErrorValidation ErrorUnknown ErrorConnecting
+        !! NotSet Declined Verified Authorized 
+        Adjusted Captured CaptureDeclined PartiallyCaptured Undone
+        ReturnRequested PartialReturnRequested ReturnUndone Returned PartiallyReturned 
+        InProcess ErrorValidation ErrorUnknown ErrorConnecting
       ).freeze
 
       attr_accessor :raw_result
