@@ -8,6 +8,8 @@ describe VaultedBilling::Gateways::Ipcommerce do
   it { should be_a VaultedBilling::Gateway }
   
   context '#capture_selective' do
+    let(:merchant_profile_id) { 'Merchant_C82ED00001' }
+    let(:options) { { :merchant_profile_id => merchant_profile_id, :workflow_id => 'C82ED00001' } }
     let(:amount) { 10.00 }
     let(:customer) { Factory.build(:customer) }
     let(:credit_card) { Factory.build(:ipcommerce_credit_card) }
@@ -18,7 +20,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
       it { should be_success }
       its(:id) { should_not be_nil }
       its(:authcode) { should be_nil }
-      its(:message) { should =~ %r{Batch file successfully uploaded.} }
+      its(:message) { should =~ %r{SUCCESS} }
       its(:code) { should == 1 }
       it "finds the correct number of transactions to capture" do
          MultiJson.decode(subject.raw_response).first["TransactionSummaryData"]["NetTotals"]["Count"].should == count
@@ -44,6 +46,12 @@ describe VaultedBilling::Gateways::Ipcommerce do
         context 'passing in a difference of the same amount' do
           let(:differences) { [{ :id => authorization.id, :amount => amount }] }
           use_vcr_cassette 'ipcommerce/capture_selective/single/same-differences/success'
+          it_should_behave_like 'a successful capture_selective', 1
+        end
+
+        context 'with differences including ship date' do
+          let(:differences) { [{ :id => authorization.id, :amount => 12.00, :ship_date => Time.now }] }
+          use_vcr_cassette 'ipcommerce/capture_selective/single/differences/success_shipdate'
           it_should_behave_like 'a successful capture_selective', 1
         end
       end

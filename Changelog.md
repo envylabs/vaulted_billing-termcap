@@ -1,3 +1,7 @@
+### 0.0.6 / 9.14.2011
+
+Added optional shipdate attribute to captureselective.
+
 ### 0.0.5 / 9.12.2011
 
 Various bugfixes.

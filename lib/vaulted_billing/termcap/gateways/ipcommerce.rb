@@ -173,10 +173,10 @@ VaultedBilling::Gateways::Ipcommerce.class_eval do
   def capture_difference(difference)
     {
       :"__type" => "BankcardCapture:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
-      :TransactionId => difference[:id], 
-      :Addendum => nil,
-      :Amount => "%.2f" % difference[:amount]
-    }
+      :TransactionId => difference[:id],
+      :Amount => "%.2f" % difference[:amount],
+      :ShipDate => difference[:ship_date].nil? ? nil : "\/Date(#{difference[:ship_date].try(:to_i)}000)\/"
+    }.select { |k, v| !v.nil? }.merge({ :Addendum => nil })
   end
   
   def date_range(key, start_date, end_date)
